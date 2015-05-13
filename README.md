@@ -31,7 +31,7 @@ The following instructions will copy a list of needed files into your CMSSW_5_3_
         cp 53X_suplimentary_files/* .
         cmsenv
         ./createJobs.py mc_DT-1100-110001_MC53_V15_5_3_11_abridged_ 3 muonGeometry_DT-Hw-111111_CSC-START53_v14-111111_Local.db singleMuonGun_RECO_Consolidated_1359Files_Blocks5_abridged.py --inputInBlocks -s mc_DT-1100-110001_MC53_V15_5_3_11_abridged.sh --validationLabel mc_DT-1100-110001_MC53_V15_5_3_11_abridged_ --b --user_mail youremail.tamu.edu --minTrackPt 30 --maxTrackPt 200 --maxDxy 0.2 --minNCrossedChambers 1 --residualsModel pureGaussian --peakNSigma 2. --station123params 100001 --station4params 110001 --cscparams 100001 --useResiduals 1100 --noCSC --mapplots --curvatureplots --segdiffplots --extraPlots --globalTag MC_53_V15::All --createAlignNtuple --gprcd inertGlobalPositionRcd --gprcdconnect sqlite_file:inertGlobalPositionRcd.db --noCleanUp
-        . mc_DT-1100-110001_MC53_V15_5_3_11.sh
+        . mc_DT-1100-110001_MC53_V15_5_3_11_abridged.sh
 
 You should now see 7 jobs submitted.
 
