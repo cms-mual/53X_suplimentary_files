@@ -6,6 +6,7 @@ Setting up muon alignment in 53X:
 
 The following bash commands will set up alignment in 53X. 
 
+        setenv SCRAM_ARCH slc6_amd64_gcc472
         cmsrel CMSSW_5_3_11
         cd CMSSW_5_3_11/src/
         cmsenv
