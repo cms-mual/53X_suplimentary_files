@@ -1,6 +1,6 @@
 # MuAlSuplimentaryFiles
 
-Setting up muon alignment in 53X:
+Setting up muon alignment in 73X:
 
 The following bash commands will set up alignment in 73X. 
 
