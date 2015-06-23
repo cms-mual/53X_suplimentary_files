@@ -1,4 +1,4 @@
-# MuAlSuplimentaryFiles
+# MuAlSupplementaryFiles
 
 Setting up muon alignment in 53X:
 
