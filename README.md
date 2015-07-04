@@ -8,7 +8,7 @@ The following bash commands will set up alignment in 53X.
         cmsrel CMSSW_5_3_28_patch1
         cd CMSSW_5_3_28_patch1/src/
         cmsenv
-        git clone https://github.com/cms-mual/Alignment.git
+        git clone https://github.com/cms-mual/Alignment.git -b CMSSW_5_3_X
         git clone https://github.com/cms-mual/TrackingTools.git
         scram b -j8
         # You may find several errors associated with c++11 pop up here after compiling. In that case, recompile with the following command once.
