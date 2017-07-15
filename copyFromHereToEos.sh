@@ -1,9 +1,10 @@
 #/bin/sh
 
 # parameters
-SEARCH_FOLDER="mc_DT-1100-111111_MC_53_V14_5_3_11_FidIdeal5M*"
-OUT_FOLDER="/store/group/alca_muonalign/$USER"
-eosComm="/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+SEARCH_FOLDER="data_CSC-1100-110001_CMSSW_926_SingMu_MuAlCalIsoMuv1_294927_297723_92X_dataRun2_Prompt_v5_shifted*"
+OUT_FOLDER="/eos/cms/store/group/alca_muonalign/$USER/"
+eosComm="eos"
+#/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
 
 #List of objects (files or dir) to copy recursively
 listfile=`ls -dR $SEARCH_FOLDER`
@@ -15,25 +16,25 @@ do
     if [ -d "$f" ]
     then
        echo " -> IS a DIR!"
-       echo "    $eosComm mkdir -p $OUT_FOLDER/$f"
-       Mkdir=`$eosComm mkdir -p $OUT_FOLDER/$f`
+       echo "    $eosComm mkdir -p $OUT_FOLDER/$f/"
+       Mkdir=`$eosComm mkdir -p $OUT_FOLDER/$f/`
        for ff in $f/*
        do   
             echo "  --> Descending: $ff"
             if [ -d "$ff" ]
             then
                echo "    --->  Another DIR!! I will just do nothing."
-               echo "          $eosComm mkdir -p $OUT_FOLDER/$ff"
-                Mkdir=`$eosComm mkdir -p $OUT_FOLDER/$ff`
+               echo "          $eosComm mkdir -p $OUT_FOLDER/$ff/"
+                Mkdir=`$eosComm mkdir -p $OUT_FOLDER/$ff/`
             else
                echo "    --->  A file: I will copy it."
-               echo "          cmsStage -f $ff $OUT_FOLDER/$f"
-               stage=`cmsStage -f $ff $OUT_FOLDER/$f`
+               echo "          eos cp -f $ff $OUT_FOLDER/"
+               stage=`eos cp $ff $OUT_FOLDER/`
             fi
        done
     else
        echo " -> IS a FILE!"
-       echo "cmsStage -f $f $OUT_FOLDER"
-       stage=`cmsStage -f $f $OUT_FOLDER`
+       echo "eos cp $f $OUT_FOLDER/"
+       stage=`eos cp $f $OUT_FOLDER/`
     fi
 done
