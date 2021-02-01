@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+import sys, os, argparse
+
+parser = argparse.ArgumentParser(description='-d script DIR -t testMode -n batchName')
+parser.add_argument("-d", "--tdir",
+                   required=True,
+                   help="shell script dir",
+                   dest="tdir")
+parser.add_argument("-t", "--test",
+                   help="test run submit only one job",
+                   type=bool,
+                   default=False,
+                   dest="testRun")
+parser.add_argument("-n", "--name",
+                   help="bach name",
+                   default="",
+                   dest="batchName")
+
+args = parser.parse_args()
+
+print ("target DIR: {}".format(args.tdir))
+cmsswBase = os.environ['CMSSW_BASE']+"/src"
+if not cmsswBase.startswith("/afs/cern.ch/work/"): 
+  print ("please work on WORK area, i.g., /afs/cern.ch/work/")
+  exit()
+print ("CMSSW Base: {}".format(cmsswBase))
+if args.batchName != "":
+  batchName = "_"+args.batchName
+  print ("batch name tag: ()".format(args.batchName))
+else: batchName = ""
+tdir = cmsswBase+"/"+args.tdir
+if tdir.endswith("/"): tdir = tdir[:-1]
+os.chdir(tdir)
+
+sList = [x for x in os.listdir(".") if x.startswith("gather") and x.endswith(".sh")]
+
+cTmp = """executable              = {sh}
+universe                = vanilla
+requirements            = (OpSysAndVer =?= "CentOS7")
+request_cpus            = {nCPU}
+max_transfer_output_mb  = {memory}
++JobFlavour             = "tomorrow"
++AccountingGroup        = "group_u_CMS.u_zh.priority"
+output                  = {shN}.out
+error                   = {shN}.err
+log                     = {shN}.log
+queue
+"""
+
+
+# gather part
+outGatherList = []
+for x in sList:
+  tmpJ = open(tdir+"/"+x.replace(".sh", ".sub"),'w')
+  data = {'sh':x, 'shN':x.replace(".sh", ""), 'nCPU':1, 'memory':'4000'}
+  tmpJ.write(cTmp.format(**data))
+  tmpJ.close()
+
+# align part
+tmpAlign = open(tdir+"/align.sub",'w')
+tmpAlignV = {'sh':'align.sh', 'shN':'align', 'nCPU':4, 'memory':'4000'}
+tmpAlign.write(cTmp.format(**tmpAlignV))
+tmpAlign.close()
+
+# validation part
+tmpVal = open(tdir+"/validation.sub",'w')
+tmpValV = {'sh':'validation.sh', 'shN':'validation', 'nCPU':4, 'memory':'4000'}
+tmpVal.write(cTmp.format(**tmpValV))
+tmpVal.close()
+
+# submit gather
+slog = open("condorSubmit.log","w")
+slog.write("batch name: {}".format(args.batchName))
+cList = [x for x in os.listdir(".") if x.startswith("gather") and x.endswith(".sub")]
+
+for i, x in enumerate(cList):
+  os.system("chmod +x "+x.replace(".sh", ".sub"))
+  os.system("chmod +x "+x)
+  print ("condor submit {}/{}".format(i+1,len(cList)))
+  os.system("condor_submit -batch-name gather"+batchName+" "+x.replace(".sh", ".sub"))
+  if args.testRun: break
