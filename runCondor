@@ -31,6 +31,13 @@ else: batchName = ""
 tdir = cmsswBase+"/"+args.tdir
 if tdir.endswith("/"): tdir = tdir[:-1]
 os.chdir(tdir)
+#make local output dirs for logs and such
+def make_if_not_exist(dir_name):
+  if not os.path.exists(dir_name):
+    os.mkdir(dir_name)
+make_if_not_exist("output")
+make_if_not_exist("error")
+make_if_not_exist("log")
 
 sList = [x for x in os.listdir(".") if x.startswith("gather") and x.endswith(".sh")]
 
@@ -41,9 +48,9 @@ request_cpus            = {nCPU}
 max_transfer_output_mb  = {memory}
 +JobFlavour             = "tomorrow"
 +AccountingGroup        = "group_u_CMS.u_zh.priority"
-output                  = {shN}.out
-error                   = {shN}.err
-log                     = {shN}.log
+output                  = output/{shN}.out
+error                   = error/{shN}.err
+log                     = log/{shN}.log
 queue
 """
 
