@@ -90,16 +90,16 @@ slog = open("condorSubmit.log","w")
 slog.write("batch name: {}".format(args.batchName))
 cList = [x.replace('.sub','') for x in os.listdir(".") if x.startswith("gather") and x.endswith(".sub")]
 
-job_template          = "JOB {jn} {tdir}/{jn}.sub\n"
+job_template          = "JOB {jn} {jn}.sub\n"
 parent_child_template = "PARENT {} CHILD {}\n"
 
 def make_dag_job(f,job_name):
-  os.system("chmod +x {}/{}*".format(tdir,job_name))
+  os.system("chmod +x {}*".format(job_name))
   dag_str = job_template.format(**{"jn":job_name,"tdir":tdir})
   f.write(dag_str)
 
 #make DAG to submit jobs in order
-os.chdir('..')
+#os.chdir('..')
 dag_name = '{}.dag'.format(args.tdir)
 with open(dag_name,'w') as f:
   #gather job dag lines
