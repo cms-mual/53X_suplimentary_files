@@ -93,6 +93,11 @@ cList = [x.replace('.sub','') for x in os.listdir(".") if x.startswith("gather")
 job_template          = "JOB {jn} {tdir}/{jn}.sub\n"
 parent_child_template = "PARENT {} CHILD {}\n"
 
+def make_dag_job(f,job_name):
+  os.system("chmod +x {}/{}*".format(tdir,job_name))
+  dag_str = job_template.format(**{"jn":job_name,"tdir":tdir})
+  f.write(dag_str)
+
 #make DAG to submit jobs in order
 os.chdir('..')
 dag_name = '{}.dag'.format(args.tdir)
@@ -100,19 +105,14 @@ with open(dag_name,'w') as f:
   #gather job dag lines
   gather_jobs_str = ""
   for i, gather_name in enumerate(cList):
-    os.system("chmod +x {}/{}*".format(tdir,gather_name))
-    dag_str = job_template.format(**{"jn":gather_name,"tdir":tdir})
-    f.write(dag_str)
+    make_dag_job(f,gather_name)
     gather_jobs_str += " {}".format(gather_name)
     if args.testRun: break
 
   # add jobs for hadd, align, validation
-  dag_str = job_template.format(**{"jn":"hadd","tdir":tdir})
-  f.write(dag_str)
-  dag_str = job_template.format(**{"jn":"align","tdir":tdir})
-  f.write(dag_str)
-  dag_str = job_template.format(**{"jn":"validation","tdir":tdir})
-  f.write(dag_str)
+  make_dag_job(f,"hadd")
+  make_dag_job(f,"align")
+  make_dag_job(f,"validation")
 
   #only run hadd, align after gather jobs finish
   job_str = parent_child_template.format(gather_jobs_str, "hadd")
