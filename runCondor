@@ -46,7 +46,7 @@ make_if_not_exist("log")
 
 sList = [x for x in os.listdir(".") if x.startswith("gather") and x.endswith(".sh")]
 
-cTmp = """executable              = {sh}
+cTmp = """executable              = {tdir}/{sh}
 universe                = vanilla
 requirements            = (OpSysAndVer =?= "CentOS7")
 request_cpus            = {nCPU}
@@ -63,25 +63,25 @@ queue
 outGatherList = []
 for x in sList:
   tmpJ = open(tdir+"/"+x.replace(".sh", ".sub"),'w')
-  data = {'sh':x, 'shN':x.replace(".sh", ""), 'nCPU':1, 'memory':'4000'}
+  data = {'sh':x, 'shN':x.replace(".sh", ""), 'nCPU':1, 'memory':'4000','tdir':tdir}
   tmpJ.write(cTmp.format(**data))
   tmpJ.close()
 
 # hadd part
 tmpHadd = open(tdir+"/hadd.sub",'w')
-tmpHaddV = {'sh':'hadd.sh', 'shN':'hadd', 'nCPU':4, 'memory':'4000'}
+tmpHaddV = {'sh':'hadd.sh', 'shN':'hadd', 'nCPU':4, 'memory':'4000','tdir':tdir}
 tmpHadd.write(cTmp.format(**tmpHaddV))
 tmpHadd.close()
 
 # align part
 tmpAlign = open(tdir+"/align.sub",'w')
-tmpAlignV = {'sh':'align.sh', 'shN':'align', 'nCPU':4, 'memory':'4000'}
+tmpAlignV = {'sh':'align.sh', 'shN':'align', 'nCPU':4, 'memory':'4000','tdir':tdir}
 tmpAlign.write(cTmp.format(**tmpAlignV))
 tmpAlign.close()
 
 # validation part
 tmpVal = open(tdir+"/validation.sub",'w')
-tmpValV = {'sh':'validation.sh', 'shN':'validation', 'nCPU':4, 'memory':'4000'}
+tmpValV = {'sh':'validation.sh', 'shN':'validation', 'nCPU':4, 'memory':'4000','tdir':tdir}
 tmpVal.write(cTmp.format(**tmpValV))
 tmpVal.close()
 
